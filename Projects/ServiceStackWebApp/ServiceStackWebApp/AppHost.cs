@@ -24,6 +24,14 @@ namespace ServiceStackWebApp
             //this.Plugins.Add(new PostmanFeature());
             //this.Plugins.Add(new CorsFeature());        
             this.Plugins.Add(new OpenApiFeature());
+
+            SetConfig(new HostConfig
+            {
+                MapExceptionToStatusCode =
+                {
+                    { typeof(ResourceNotFoundException), 404 }
+                }
+            });
         }
     }
 }

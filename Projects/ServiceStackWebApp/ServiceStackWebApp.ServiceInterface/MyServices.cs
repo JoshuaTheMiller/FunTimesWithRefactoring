@@ -7,6 +7,11 @@ namespace ServiceStackWebApp.ServiceInterface
     {
         public object Get(Hello request)
         {
+            if(request.Name == "ThrowNotFound")
+            {
+                throw new ResourceNotFoundException();
+            }
+
             return new HelloResponse { Result = $"Hello, {request.Name}!" };
         }
     }
