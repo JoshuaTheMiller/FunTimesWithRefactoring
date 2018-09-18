@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="DesktopClient.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DesktopClient"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="ServiceUrlBox"  
+                 PlaceholderText="Url of Service"/>
+        <Pivot x:Name="PivotControl" 
+               ItemsSource="{Binding ServiceExamples}"
+               Grid.Row="1">
+            <Pivot.HeaderTemplate>
+                <DataTemplate x:DataType="local:IServiceExample">
+                    <TextBlock Text="{Binding Header}"/>
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemTemplate>
+                <DataTemplate x:DataType="local:IServiceExample">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Header}"/>
+                        <TextBox PlaceholderText="Enter a name to submit, or ThrowNotFound to demo an exception." 
+                                 Text="{Binding SearchInput}"/>
+                        <Button Command="{Binding ExecuteCommand}" Content="Execute"/>
+                        <TextBlock Text="{Binding SearchOutput}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+        </Pivot>
+    </Grid>
+</Page>
