@@ -10,9 +10,13 @@
         public string SearchInput
         {
             get => searchInput;
-            set => Set(ref searchInput, value);
+            set
+            {
+                Set(ref searchInput, value);
+                ExecuteCommand.RaiseCanExecuteChanged();
+            }
         }
-        
+
         private string searchOutput = string.Empty;
         public string SearchOutput
         {
@@ -29,7 +33,7 @@
 
         private bool CanExecute(object arg)
         {
-            if (string.IsNullOrWhiteSpace(SourceUrl))
+            if (string.IsNullOrWhiteSpace(SourceUrl) || string.IsNullOrWhiteSpace(SearchInput))
             {
                 return false;
             }

@@ -1,4 +1,5 @@
 ﻿using ServiceStack;
+using ServiceStackCoreApp.ServiceModel;
 
 namespace DesktopClient
 {
@@ -12,8 +13,27 @@ namespace DesktopClient
         {
             this.output++;
             SearchOutput = output.ToString();
-            
-            var client = new JsonServiceClient(SourceUrl);
+
+            var request = new Hello
+            {
+                Name = this.SearchInput
+            };
+
+            var client = new JsonServiceClient(SourceUrl);            
+
+            try
+            {
+                var response = client.Get(request);
+                this.SearchOutput = response.Result;
+            }
+            catch(WebServiceException ex)
+            {
+                this.SearchOutput = "Something went wrong";
+
+                // I've seen logging be done here
+                // I've also seen a catch all exception block be placed
+                // so that all exceptions are swallowed...
+            }            
         }
     }
 }

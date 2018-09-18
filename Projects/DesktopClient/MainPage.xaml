@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <TextBox x:Name="ServiceUrlBox"  
                  PlaceholderText="Url of Service"
-                 TextChanged="ServiceUrlBox_TextChanged"/>
+                 TextChanged="ServiceUrlBox_TextChanged" />
         <Pivot x:Name="PivotControl" 
                ItemsSource="{Binding ServiceExamples}"
                Grid.Row="1">
@@ -28,7 +28,7 @@
                     <StackPanel>
                         <TextBlock Text="{Binding Header}"/>
                         <TextBox PlaceholderText="Enter a name to submit, or ThrowNotFound to demo an exception." 
-                                 Text="{Binding SearchInput}"/>
+                                 Text="{Binding SearchInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button Command="{Binding ExecuteCommand}" Content="Execute"/>
                         <TextBlock Text="{Binding SearchOutput}"/>
                     </StackPanel>
