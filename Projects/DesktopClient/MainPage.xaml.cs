@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using ClientPlatform.ServiceStack.RoutedClient;
+using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -13,10 +14,12 @@ namespace DesktopClient
 
         public MainPage()
         {
+            var serviceClientFactory = new RoutedServiceClientFactory();
+
             ServiceExamples = new ObservableCollection<IServiceExample>()
             {
                 new ServiceStackExample(),
-                new OnionStackExample()
+                new OnionStackExample(serviceClientFactory)
             };
 
             this.DataContext = this;

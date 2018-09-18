@@ -104,6 +104,8 @@
     <Compile Include="ObservableObject.cs" />
     <Compile Include="OnionStackExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Platform\RoutedServiceClient.cs" />
+    <Compile Include="Platform\RoutedServiceClientFactory.cs" />
     <Compile Include="ServiceExample.cs" />
     <Compile Include="ServiceStackExample.cs" />
   </ItemGroup>
@@ -142,6 +144,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientFramework\ClientFramework.csproj">
+      <Project>{b62b79ca-1315-49d3-a6e2-6596e37b784b}</Project>
+      <Name>ClientFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServiceStackCoreApp\ServiceStackCoreApp.ServiceModel\ServiceStackCoreApp.ServiceModel.csproj">
       <Project>{8cb61723-da87-439e-bfa0-cd1928cd8260}</Project>
       <Name>ServiceStackCoreApp.ServiceModel</Name>
