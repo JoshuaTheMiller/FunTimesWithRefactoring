@@ -7,6 +7,7 @@ namespace DesktopClient
         string Header { get; }
         string SearchInput { get; set; }
         string SearchOutput { get; }
-        ICommand ExecuteCommand { get; }
+        IDelegateCommand ExecuteCommand { get; }
+        void SetHostUrl(string sourceUrl);
     }
 }

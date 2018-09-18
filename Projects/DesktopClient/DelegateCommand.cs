@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Windows.Input;
 
 namespace DesktopClient
 {
-    public sealed class DelegateCommand : ICommand
+    public sealed class DelegateCommand : IDelegateCommand
     {
         private Action<object> execute;
         private Func<object, bool> canExecute;

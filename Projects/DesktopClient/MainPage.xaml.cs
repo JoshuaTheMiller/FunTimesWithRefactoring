@@ -2,7 +2,6 @@
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace DesktopClient
 {
     /// <summary>
@@ -22,6 +21,14 @@ namespace DesktopClient
 
             this.DataContext = this;
             this.InitializeComponent();
+        }
+
+        private void ServiceUrlBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            foreach(var example in ServiceExamples)
+            {
+                example.SetHostUrl(ServiceUrlBox.Text);
+            }
         }
     }
 }

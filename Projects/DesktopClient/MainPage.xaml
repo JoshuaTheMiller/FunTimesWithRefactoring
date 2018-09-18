@@ -13,7 +13,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBox x:Name="ServiceUrlBox"  
-                 PlaceholderText="Url of Service"/>
+                 PlaceholderText="Url of Service"
+                 TextChanged="ServiceUrlBox_TextChanged"/>
         <Pivot x:Name="PivotControl" 
                ItemsSource="{Binding ServiceExamples}"
                Grid.Row="1">
