@@ -46,6 +46,9 @@
     <Reference Include="ServiceStack, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ServiceStack.5.2.0\lib\net45\ServiceStack.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Api.OpenApi, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ServiceStack.Api.OpenApi.5.2.0\lib\net45\ServiceStack.Api.OpenApi.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\ServiceStack.Client.5.2.0\lib\net45\ServiceStack.Client.dll</HintPath>
     </Reference>
