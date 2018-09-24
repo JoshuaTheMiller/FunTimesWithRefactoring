@@ -1,5 +1,7 @@
-﻿using ClientPlatform.ServiceStack.RoutedClient;
+﻿using ClientPlatform;
+using DesktopClient.ClientPlatform;
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -14,7 +16,15 @@ namespace DesktopClient
 
         public MainPage()
         {
-            var serviceClientFactory = new RoutedServiceClientFactory();
+            IStringToVerbMapper stringToVerbMapper = new StringToVerbMapper();
+            IAttributeReader attributeReader = new AttributeReader();
+            IRouteReader routeReader = new ServiceStackRouteReader(attributeReader, stringToVerbMapper);
+            StringSerializer stringSerializer = new StringSerializer();
+            StringDeserializer stringDeserializer = new StringDeserializer();
+            IUrlTokenizer urlTokenizer = new UrlTokenizer();
+            ITokenizedUrlFiller tokenizedUrlFiller = new TokenizedUrlFiller();
+            IWebClient webClient = new WebClient(new HttpClient(), stringSerializer, stringDeserializer, urlTokenizer, tokenizedUrlFiller);           
+            var serviceClientFactory = new RoutedServiceClientFactory(routeReader, webClient);
 
             ServiceExamples = new ObservableCollection<IServiceExample>()
             {
