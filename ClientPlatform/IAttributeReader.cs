@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DesktopClient.Platform
+namespace ClientPlatform
 {
     public interface IAttributeReader
     {

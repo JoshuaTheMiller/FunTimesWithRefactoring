@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DesktopClient.Platform
+namespace ClientPlatform
 {
     [Serializable]
     public sealed class VerbNotRecognizedException : Exception

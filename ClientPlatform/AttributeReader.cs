@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DesktopClient.Platform
+namespace ClientPlatform
 {
     public sealed class AttributeReader : IAttributeReader
     {

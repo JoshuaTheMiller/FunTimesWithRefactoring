@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using ClientPlatform;
 using ServiceStack;
 
-namespace DesktopClient.Platform
+namespace DesktopClient.ClientPlatform
 {
-    public sealed class ServiceStackRouteReader : IServiceStackRouteReader
+    public sealed class ServiceStackRouteReader : IRouteReader
     {
         private readonly IAttributeReader attributeReader;
         private readonly IStringToVerbMapper stringToVerbMapper;
@@ -14,7 +15,7 @@ namespace DesktopClient.Platform
             this.stringToVerbMapper = stringToVerbMapper;
         }
 
-        public ServiceStackRoute GetRouteFromRequest<T>(T request)
+        public ServiceRoute GetRouteFromRequest<T>(T request)
         {
             var attributes = attributeReader.GetAttribute<RouteAttribute>(typeof(T)).ToList();
 
@@ -32,7 +33,7 @@ namespace DesktopClient.Platform
                 // throw specific exception
             }
 
-            return new ServiceStackRoute(attribute.Path, stringToVerbMapper.MapToVerb(verbs[0]));
+            return new ServiceRoute(attribute.Path, stringToVerbMapper.MapToVerb(verbs[0]));
         }
     }
 }

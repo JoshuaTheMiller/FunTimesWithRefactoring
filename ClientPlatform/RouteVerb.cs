@@ -1,4 +1,4 @@
-﻿namespace DesktopClient.Platform
+﻿namespace ClientPlatform
 {
     public enum RouteVerb
     {

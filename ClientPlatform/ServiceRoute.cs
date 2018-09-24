@@ -1,8 +1,8 @@
-﻿namespace DesktopClient.Platform
+﻿namespace ClientPlatform
 {
-    public sealed class ServiceStackRoute
+    public sealed class ServiceRoute
     {
-        public ServiceStackRoute(string route, RouteVerb verb)
+        public ServiceRoute(string route, RouteVerb verb)
         {
             Route = route;
             Verb = verb;
