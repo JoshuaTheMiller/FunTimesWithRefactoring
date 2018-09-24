@@ -103,8 +103,20 @@
     </Compile>
     <Compile Include="ObservableObject.cs" />
     <Compile Include="OnionStackExample.cs" />
+    <Compile Include="Platform\AttributeReader.cs" />
+    <Compile Include="Platform\IAttributeReader.cs" />
+    <Compile Include="Platform\IServiceStackRouteReader.cs" />
+    <Compile Include="Platform\IStringToVerbMapper.cs" />
+    <Compile Include="Platform\IWebClient.cs" />
+    <Compile Include="Platform\RouteVerb.cs" />
+    <Compile Include="Platform\SerializerManager.cs" />
+    <Compile Include="Platform\ServiceStackRoute.cs" />
+    <Compile Include="Platform\ServiceStackRouteReader.cs" />
+    <Compile Include="Platform\StringToVerbMapper.cs" />
+    <Compile Include="Platform\VerbNotRecognizedException.cs" />
+    <Compile Include="Platform\WebClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Platform\RoutedServiceClient.cs" />
+    <Compile Include="Platform\ServiceStackRoutedServiceClient.cs" />
     <Compile Include="Platform\RoutedServiceClientFactory.cs" />
     <Compile Include="ServiceExample.cs" />
     <Compile Include="ServiceStackExample.cs" />
