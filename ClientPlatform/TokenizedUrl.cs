@@ -5,10 +5,14 @@ namespace ClientPlatform
 {
     public sealed class TokenizedUrl
     {
-        public TokenizedUrl(IEnumerable<string> resourceNames, string fullUrl)
+        private readonly ITokenizedUrlFulfiller tokenizedUrlFulfiller;
+
+        public TokenizedUrl(IEnumerable<string> resourceNames, string fullUrl, ITokenizedUrlFulfiller tokenizedUrlFulfiller)
         {
             tokenValueDictionary = resourceNames.ToDictionary(s => s);
             FullUrl = fullUrl;
+
+            this.tokenizedUrlFulfiller = tokenizedUrlFulfiller;
         }
 
         private readonly IDictionary<string, string> tokenValueDictionary = new Dictionary<string, string>();
@@ -27,6 +31,9 @@ namespace ClientPlatform
 
         public string FullUrl { get; }
 
-
+        public string GetFilledUrl()
+        {
+            return tokenizedUrlFulfiller.Fill(this);
+        }
     }
 }

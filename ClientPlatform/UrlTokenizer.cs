@@ -6,11 +6,18 @@ namespace ClientPlatform
 {
     public sealed class UrlTokenizer : IUrlTokenizer
     {
+        private readonly ITokenizedUrlFulfiller tokenizedUrlFulfiller;
+
+        public UrlTokenizer(ITokenizedUrlFulfiller tokenizedUrlFulfiller)
+        {
+            this.tokenizedUrlFulfiller = tokenizedUrlFulfiller;
+        }
+
         public TokenizedUrl Tokenize(string fullUrl, IDictionary<string, string> requestPropertiesDictionary)
         {
             var propertiesToFill = FindPropertiesToFill(fullUrl);
 
-            var tokenizedUrl = new TokenizedUrl(propertiesToFill, fullUrl);
+            var tokenizedUrl = new TokenizedUrl(propertiesToFill, fullUrl, tokenizedUrlFulfiller);
 
             foreach (var property in propertiesToFill)
             {

@@ -1,6 +1,6 @@
 ﻿namespace ClientPlatform
 {
-    public interface ITokenizedUrlFiller
+    public interface ITokenizedUrlFulfiller
     {        
         string Fill(TokenizedUrl tokenizedUrl);
     }

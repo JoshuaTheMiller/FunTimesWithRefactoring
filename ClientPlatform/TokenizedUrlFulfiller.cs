@@ -2,7 +2,7 @@
 
 namespace ClientPlatform
 {
-    public sealed class TokenizedUrlFiller : ITokenizedUrlFiller
+    public sealed class TokenizedUrlFulfiller : ITokenizedUrlFulfiller
     {
         public string Fill(TokenizedUrl tokenizedUrl)
         {

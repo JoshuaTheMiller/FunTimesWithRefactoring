@@ -16,16 +16,14 @@ namespace ClientPlatform
         private readonly HttpClient httpClient;
         private readonly IStringSerializer stringSerializer;
         private readonly IStringDeserializer stringDeserializer;
-        private readonly IUrlTokenizer urlTokenizer;
-        private readonly ITokenizedUrlFiller tokenizedUrlFiller;
+        private readonly IUrlTokenizer urlTokenizer;        
 
-        public WebClient(HttpClient httpClient, IStringSerializer stringSerializer, IStringDeserializer stringDeserializer, IUrlTokenizer urlTokenizer, ITokenizedUrlFiller tokenizedUrlFiller)
+        public WebClient(HttpClient httpClient, IStringSerializer stringSerializer, IStringDeserializer stringDeserializer, IUrlTokenizer urlTokenizer)
         {
             this.httpClient = httpClient;
             this.stringSerializer = stringSerializer;
             this.stringDeserializer = stringDeserializer;
-            this.urlTokenizer = urlTokenizer;
-            this.tokenizedUrlFiller = tokenizedUrlFiller;
+            this.urlTokenizer = urlTokenizer;           
         }
 
         public RoutedServiceResponse<TResponse> Send<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
@@ -34,7 +32,7 @@ namespace ClientPlatform
 
             var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
 
-            var filledUrl = tokenizedUrlFiller.Fill(tokenizedUrl);
+            var filledUrl = tokenizedUrl.GetFilledUrl();
 
             var webRequest = WebRequest.Create(filledUrl);
 
@@ -84,7 +82,7 @@ namespace ClientPlatform
 
             var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
 
-            var filledUrl = tokenizedUrlFiller.Fill(tokenizedUrl);
+            var filledUrl = tokenizedUrl.GetFilledUrl();
 
             var verb = MapVerb(routeVerb);
 

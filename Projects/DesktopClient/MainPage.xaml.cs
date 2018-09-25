@@ -21,9 +21,9 @@ namespace DesktopClient
             IRouteReader routeReader = new ServiceStackRouteReader(attributeReader, stringToVerbMapper);
             StringSerializer stringSerializer = new StringSerializer();
             StringDeserializer stringDeserializer = new StringDeserializer();
-            IUrlTokenizer urlTokenizer = new UrlTokenizer();
-            ITokenizedUrlFiller tokenizedUrlFiller = new TokenizedUrlFiller();
-            IWebClient webClient = new WebClient(new HttpClient(), stringSerializer, stringDeserializer, urlTokenizer, tokenizedUrlFiller);           
+            ITokenizedUrlFulfiller tokenizedUrlFiller = new TokenizedUrlFulfiller();
+            IUrlTokenizer urlTokenizer = new UrlTokenizer(tokenizedUrlFiller);
+            IWebClient webClient = new WebClient(new HttpClient(), stringSerializer, stringDeserializer, urlTokenizer);           
             var serviceClientFactory = new RoutedServiceClientFactory(routeReader, webClient);
 
             ServiceExamples = new ObservableCollection<IServiceExample>()
