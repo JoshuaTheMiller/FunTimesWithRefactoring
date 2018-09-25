@@ -28,7 +28,7 @@ namespace DesktopClient
             }
             catch(WebServiceException ex)
             {
-                this.SearchOutput = "Something went wrong";
+                this.SearchOutput = $"Something went wrong: {ex.Message}";
 
                 // I've seen logging be done here
                 // I've also seen a catch all exception block be placed
