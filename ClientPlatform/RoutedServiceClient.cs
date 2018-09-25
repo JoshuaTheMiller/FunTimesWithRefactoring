@@ -1,5 +1,4 @@
 ﻿using ClientFramework;
-using System;
 
 namespace ClientPlatform
 {
@@ -24,15 +23,7 @@ namespace ClientPlatform
 
             RoutedServiceResponse<TResponse> response = default(RoutedServiceResponse<TResponse>);
 
-            try
-            {
-
-                response = webClient.Send<TRequest, TResponse>(request, fullUrl, route.Verb);
-            }
-            catch (Exception ex)
-            {
-                "".ToString();
-            }
+            response = webClient.Send<TRequest, TResponse>(request, fullUrl, route.Verb);
 
             return response;
         }

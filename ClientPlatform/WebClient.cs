@@ -30,7 +30,7 @@ namespace ClientPlatform
             var webRequest = WebRequest.Create(filledUrl);
 
             webRequest.Method = routeVerb.ToString();
-            webRequest.Headers.Add("accept", "application/json");            
+            webRequest.Headers.Add("accept", "application/json");
 
             if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
             {
@@ -46,7 +46,21 @@ namespace ClientPlatform
                 }
             }
 
-            var webResponse = (HttpWebResponse)webRequest.GetResponse();
+            HttpWebResponse webResponse = null;
+
+            try
+            {
+                webResponse = (HttpWebResponse)webRequest.GetResponse();
+            }
+            catch (WebException exception)
+            {                               
+                if(exception.Status != WebExceptionStatus.ProtocolError)
+                {
+                    throw exception;
+                }
+
+                webResponse = (HttpWebResponse)exception.Response;
+            }
 
             if (webResponse.StatusCode != HttpStatusCode.OK)
             {
@@ -62,7 +76,7 @@ namespace ClientPlatform
             }
 
             return CreateSuccessResponse<TResponse>(responseAsString);
-        }   
+        }
 
         private async Task<RoutedServiceResponse<TResponse>> SendAsync<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
         {
@@ -70,14 +84,14 @@ namespace ClientPlatform
 
             var verb = MapVerb(routeVerb);
 
-            var httpMessageRequest = new HttpRequestMessage(verb, filledUrl);            
+            var httpMessageRequest = new HttpRequestMessage(verb, filledUrl);
             httpMessageRequest.Headers.Add("accept", "application/json");
 
             if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
             {
                 var requestAsString = new StringContent(stringSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 httpMessageRequest.Content = requestAsString;
-            }            
+            }
 
             var httpResponse = await httpClient.SendAsync(httpMessageRequest);
 
@@ -113,6 +127,6 @@ namespace ClientPlatform
                 default:
                     throw new ArgumentOutOfRangeException(nameof(routeVerb), routeVerb, null);
             }
-        }    
+        }
     }
 }
