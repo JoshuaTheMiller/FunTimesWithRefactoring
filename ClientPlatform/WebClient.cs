@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -24,7 +26,7 @@ namespace ClientPlatform
             this.stringDeserializer = stringDeserializer;
             this.urlTokenizer = urlTokenizer;
             this.tokenizedUrlFiller = tokenizedUrlFiller;
-        } 
+        }
 
         public RoutedServiceResponse<TResponse> Send<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
         {
@@ -34,7 +36,55 @@ namespace ClientPlatform
 
             var filledUrl = tokenizedUrlFiller.Fill(tokenizedUrl);
 
-            var requestAsString = new StringContent(stringSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var webRequest = WebRequest.Create(filledUrl);
+
+            webRequest.Method = routeVerb.ToString();
+            webRequest.Headers.Add("accept", "application/json");
+
+            if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
+            {
+                var content = stringSerializer.Serialize(request);
+                var contentAsByteArray = Encoding.UTF8.GetBytes(content);
+
+                webRequest.ContentType = "application/json";
+                webRequest.ContentLength = contentAsByteArray.Length;
+
+                using (var requestStream = webRequest.GetRequestStream())
+                {
+                    requestStream.Write(contentAsByteArray, 0, contentAsByteArray.Length);
+                }
+            }
+
+            if (routeVerb == RouteVerb.Get)
+            {
+                // need the ability to add query string parameters for GET
+            }
+
+            var webResponse = (HttpWebResponse)webRequest.GetResponse();
+
+            if (webResponse.StatusCode != HttpStatusCode.OK)
+            {
+                return new RoutedServiceResponse<TResponse>(default(TResponse), false, webResponse.StatusDescription);
+            }
+
+            string responseAsString = string.Empty;
+
+            using (var responseData = webResponse.GetResponseStream())
+            using (var streamReader = new StreamReader(responseData))
+            {
+                responseAsString = streamReader.ReadToEnd();
+            }
+
+            return new RoutedServiceResponse<TResponse>(stringDeserializer.Deserialize<TResponse>(responseAsString), true, string.Empty);
+        }
+
+        private async Task<RoutedServiceResponse<TResponse>> SendAsync<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
+        {
+            IDictionary<string, string> requestPropertiesDictionary = GetRequestPropertiesDictionary(request);
+
+            var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
+
+            var filledUrl = tokenizedUrlFiller.Fill(tokenizedUrl);
 
             var verb = MapVerb(routeVerb);
 
@@ -42,27 +92,27 @@ namespace ClientPlatform
             httpMessageRequest.Method = verb;
             httpMessageRequest.Headers.Add("accept", "application/json");
 
-            if(routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
+            if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
             {
+                var requestAsString = new StringContent(stringSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 httpMessageRequest.Content = requestAsString;
             }
 
-
-            if(routeVerb == RouteVerb.Get)
+            if (routeVerb == RouteVerb.Get)
             {
                 // need the ability to add query string parameters for GET
             }
 
             httpMessageRequest.RequestUri = new Uri(filledUrl);
 
-            var httpResponse = Task.Run(async () => await httpClient.SendAsync(httpMessageRequest)).Result;
+            var httpResponse = await httpClient.SendAsync(httpMessageRequest);
 
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return new RoutedServiceResponse<TResponse>(default(TResponse), false, httpResponse.ReasonPhrase);
             }
 
-            var responseAsString = Task.Run(async () => await httpResponse.Content.ReadAsStringAsync()).Result;
+            var responseAsString = await httpResponse.Content.ReadAsStringAsync();
 
             return new RoutedServiceResponse<TResponse>(stringDeserializer.Deserialize<TResponse>(responseAsString), true, string.Empty);
         }
