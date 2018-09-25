@@ -32,6 +32,11 @@ namespace ClientPlatform
 
             var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
 
+            if (routeVerb == RouteVerb.Get)
+            {
+                // need the ability to add query string parameters for GET
+            }
+
             var filledUrl = tokenizedUrl.GetFilledUrl();
 
             var webRequest = WebRequest.Create(filledUrl);
@@ -51,11 +56,6 @@ namespace ClientPlatform
                 {
                     requestStream.Write(contentAsByteArray, 0, contentAsByteArray.Length);
                 }
-            }
-
-            if (routeVerb == RouteVerb.Get)
-            {
-                // need the ability to add query string parameters for GET
             }
 
             var webResponse = (HttpWebResponse)webRequest.GetResponse();
@@ -82,6 +82,11 @@ namespace ClientPlatform
 
             var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
 
+            if (routeVerb == RouteVerb.Get)
+            {
+                // need the ability to add query string parameters for GET
+            }
+
             var filledUrl = tokenizedUrl.GetFilledUrl();
 
             var verb = MapVerb(routeVerb);
@@ -94,12 +99,7 @@ namespace ClientPlatform
             {
                 var requestAsString = new StringContent(stringSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 httpMessageRequest.Content = requestAsString;
-            }
-
-            if (routeVerb == RouteVerb.Get)
-            {
-                // need the ability to add query string parameters for GET
-            }
+            }         
 
             httpMessageRequest.RequestUri = new Uri(filledUrl);
 
@@ -113,11 +113,6 @@ namespace ClientPlatform
             var responseAsString = await httpResponse.Content.ReadAsStringAsync();
 
             return new RoutedServiceResponse<TResponse>(stringDeserializer.Deserialize<TResponse>(responseAsString), true, string.Empty);
-        }
-
-        private object FillUrlWithValues(string fullUrl, IDictionary<string, object> propertiesDictionary)
-        {
-            throw new NotImplementedException();
         }
 
         private HttpMethod MapVerb(RouteVerb routeVerb)
