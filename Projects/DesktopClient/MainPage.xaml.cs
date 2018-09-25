@@ -23,7 +23,9 @@ namespace DesktopClient
             StringDeserializer stringDeserializer = new StringDeserializer();
             ITokenizedUrlFulfiller tokenizedUrlFiller = new TokenizedUrlFulfiller();
             IUrlTokenizer urlTokenizer = new UrlTokenizer(tokenizedUrlFiller);
-            IWebClient webClient = new WebClient(new HttpClient(), stringSerializer, stringDeserializer, urlTokenizer);           
+            IObjectToDictionaryMapper objectToDictionaryMapper = new ObjectToDictionaryMapper();
+            IFilledUrlFactory filledUrlRetriever = new FilledUrlFactory(urlTokenizer, objectToDictionaryMapper);
+            IWebClient webClient = new WebClient(new HttpClient(), stringSerializer, stringDeserializer, filledUrlRetriever);           
             var serviceClientFactory = new RoutedServiceClientFactory(routeReader, webClient);
 
             ServiceExamples = new ObservableCollection<IServiceExample>()

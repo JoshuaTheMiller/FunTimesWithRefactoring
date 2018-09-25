@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ClientFramework;
@@ -16,33 +13,24 @@ namespace ClientPlatform
         private readonly HttpClient httpClient;
         private readonly IStringSerializer stringSerializer;
         private readonly IStringDeserializer stringDeserializer;
-        private readonly IUrlTokenizer urlTokenizer;        
+        private readonly IFilledUrlFactory filledUrlRetriever;
 
-        public WebClient(HttpClient httpClient, IStringSerializer stringSerializer, IStringDeserializer stringDeserializer, IUrlTokenizer urlTokenizer)
+        public WebClient(HttpClient httpClient, IStringSerializer stringSerializer, IStringDeserializer stringDeserializer, IFilledUrlFactory filledUrlRetriever)
         {
             this.httpClient = httpClient;
             this.stringSerializer = stringSerializer;
             this.stringDeserializer = stringDeserializer;
-            this.urlTokenizer = urlTokenizer;           
+            this.filledUrlRetriever = filledUrlRetriever;
         }
 
         public RoutedServiceResponse<TResponse> Send<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
         {
-            IDictionary<string, string> requestPropertiesDictionary = GetRequestPropertiesDictionary(request);
-
-            var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
-
-            if (routeVerb == RouteVerb.Get)
-            {
-                // need the ability to add query string parameters for GET
-            }
-
-            var filledUrl = tokenizedUrl.GetFilledUrl();
+            string filledUrl = filledUrlRetriever.GetFilledUrl(request, fullUrl, routeVerb);
 
             var webRequest = WebRequest.Create(filledUrl);
 
             webRequest.Method = routeVerb.ToString();
-            webRequest.Headers.Add("accept", "application/json");
+            webRequest.Headers.Add("accept", "application/json");            
 
             if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
             {
@@ -73,35 +61,23 @@ namespace ClientPlatform
                 responseAsString = streamReader.ReadToEnd();
             }
 
-            return new RoutedServiceResponse<TResponse>(stringDeserializer.Deserialize<TResponse>(responseAsString), true, string.Empty);
-        }
+            return CreateSuccessResponse<TResponse>(responseAsString);
+        }   
 
         private async Task<RoutedServiceResponse<TResponse>> SendAsync<TRequest, TResponse>(TRequest request, string fullUrl, RouteVerb routeVerb)
         {
-            IDictionary<string, string> requestPropertiesDictionary = GetRequestPropertiesDictionary(request);
-
-            var tokenizedUrl = urlTokenizer.Tokenize(fullUrl, requestPropertiesDictionary);
-
-            if (routeVerb == RouteVerb.Get)
-            {
-                // need the ability to add query string parameters for GET
-            }
-
-            var filledUrl = tokenizedUrl.GetFilledUrl();
+            string filledUrl = filledUrlRetriever.GetFilledUrl(request, fullUrl, routeVerb);
 
             var verb = MapVerb(routeVerb);
 
-            var httpMessageRequest = new HttpRequestMessage();
-            httpMessageRequest.Method = verb;
+            var httpMessageRequest = new HttpRequestMessage(verb, filledUrl);            
             httpMessageRequest.Headers.Add("accept", "application/json");
 
             if (routeVerb != RouteVerb.Get && routeVerb != RouteVerb.Delete)
             {
                 var requestAsString = new StringContent(stringSerializer.Serialize(request), Encoding.UTF8, "application/json");
                 httpMessageRequest.Content = requestAsString;
-            }         
-
-            httpMessageRequest.RequestUri = new Uri(filledUrl);
+            }            
 
             var httpResponse = await httpClient.SendAsync(httpMessageRequest);
 
@@ -112,6 +88,11 @@ namespace ClientPlatform
 
             var responseAsString = await httpResponse.Content.ReadAsStringAsync();
 
+            return CreateSuccessResponse<TResponse>(responseAsString);
+        }
+
+        private RoutedServiceResponse<TResponse> CreateSuccessResponse<TResponse>(string responseAsString)
+        {
             return new RoutedServiceResponse<TResponse>(stringDeserializer.Deserialize<TResponse>(responseAsString), true, string.Empty);
         }
 
@@ -132,12 +113,6 @@ namespace ClientPlatform
                 default:
                     throw new ArgumentOutOfRangeException(nameof(routeVerb), routeVerb, null);
             }
-        }
-
-        private IDictionary<string, string> GetRequestPropertiesDictionary<T>(T obj)
-        {
-            return obj?.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-              .ToDictionary(prop => prop.Name, prop => prop.GetValue(obj, null).ToString());
-        }
+        }    
     }
 }
